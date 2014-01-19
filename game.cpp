@@ -5,7 +5,6 @@
 
 using namespace std;
 
-// init the board to blank
 Game::Game() {
 	for(int i = 0; i < 3; i++) {
 		for(int j = 0; j < 3; j++) {
@@ -72,7 +71,7 @@ int Game::score() {
 	return 0; // draw
 }
 
-Move Game::minmax(char AIboard[3][3]) { 
+Move Game::minimax(char AIboard[3][3]) { 
 	int bestMoveScore = 100; // -100 is arbitrary
 	Move bestMove;
 
@@ -137,30 +136,36 @@ int Game::minSearch(char AIboard[3][3]) {
 	return bestMoveScore;
 }
 
+void Game::getHumanMove() {
+	int x, y = -1; // arbitrary assignment to init loop
+	while(x < 0 || x > 2 || y < 0 || y > 2) {
+		// Loop until a valid move is entered
+		cout << "Enter your move in coordinate form, ex: (1,3)." << endl;
+		cout << "Your Move: ";
+		char c;
+		string restofline;
+		cin >> c >> c;
+		x = c - '0' - 1;
+		cin >> c >> c;
+		y = c - '0' - 1;
+		getline(cin, restofline); // get garbage chars after move
+	}
+	board[x][y] = human;
+}
+
 void Game::play() {
 	int turn = 0;
 	printBoard();
 	while(!checkWin(HUMAN) && !checkWin(AI) && !gameOver()) {
 		// human move
 		if(turn % 2 == 0) {
-			cout << "Enter your move in coordinate form, ex: (1,3)." << endl;
-			cout << "Your Move: ";
-			int x, y;
-			char c;
-			string restofline;
-			cin >> c >> c;
-			x = c - '0' - 1;
-			cin >> c >> c;
-			y = c - '0' - 1;
-			getline(cin, restofline); // get garbage chars after move
-			cout << x << " " << y << endl;
-			board[x][y] = human; // NEED TO CHECK THIS
+			getHumanMove();
 			turn++;
 			printBoard();
 			if(checkWin(HUMAN)) cout << "p1 wins" << endl;
 		} else {
 			cout << endl << "Computer Player Move:" << endl;
-			Move AImove = minmax(board);
+			Move AImove = minimax(board);
 			board[AImove.x][AImove.y] = ai;
 			if(checkWin(AI)) cout << "p2 wins" << endl;
 			turn++;
