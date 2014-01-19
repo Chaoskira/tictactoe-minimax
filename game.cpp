@@ -118,6 +118,7 @@ int Game::maxSearch(char AIboard[3][3]) {
 
 int Game::minSearch(char AIboard[3][3]) {
 	if(gameOver()) return score();
+	Move bestMove;
 
 	int bestMoveScore = 1000; 
 	for(int i = 0; i < 3; i++) {
@@ -127,6 +128,8 @@ int Game::minSearch(char AIboard[3][3]) {
 				int tempMove = maxSearch(AIboard);
 				if(tempMove <= bestMoveScore) {
 					bestMoveScore = tempMove;
+					bestMove.x = i;
+					bestMove.y = j;
 				}
 				AIboard[i][j] = '-';
 			}
@@ -160,14 +163,14 @@ void Game::play() {
 		// human move
 		if(turn % 2 == 0) {
 			getHumanMove();
+			if(checkWin(HUMAN)) cout << "Human Player Wins" << endl;
 			turn++;
 			printBoard();
-			if(checkWin(HUMAN)) cout << "p1 wins" << endl;
 		} else {
 			cout << endl << "Computer Player Move:" << endl;
 			Move AImove = minimax(board);
 			board[AImove.x][AImove.y] = ai;
-			if(checkWin(AI)) cout << "p2 wins" << endl;
+			if(checkWin(AI)) cout << "Computer Player Wins" << endl;
 			turn++;
 			printBoard();
 		}
